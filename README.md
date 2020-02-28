@@ -1,4 +1,4 @@
-#Rick and Morty Characters
+<h1>Rick and Morty Characters</h1>
 
 First, install all dependencies
 
