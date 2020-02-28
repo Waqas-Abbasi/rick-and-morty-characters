@@ -1,203 +1,155 @@
-import Head from 'next/head'
+import React, {useEffect, useState} from 'react';
+import styles from '../styles/index.scss';
+import CharacterCard from '../components/CharacterCard/CharacterCard';
+import fetch from 'isomorphic-unfetch';
+import Router from 'next/router';
+import CharacterDetailModals from '../components/CharacterDetailsModal/CharacterDetailsModal';
+import Modal from 'react-modal';
+import API_URLS from '../api-urls';
 
-const Home = () => (
-  <div className="container">
-    <Head>
-      <title>Create Next App</title>
-      <link rel="icon" href="/favicon.ico" />
-    </Head>
+class App extends React.Component {
 
-    <main>
-      <h1 className="title">
-        Welcome to <a href="https://nextjs.org">Next.js!</a>
-      </h1>
-
-      <p className="description">
-        Get started by editing <code>pages/index.js</code>
-      </p>
-
-      <div className="grid">
-        <a href="https://nextjs.org/docs" className="card">
-          <h3>Documentation &rarr;</h3>
-          <p>Find in-depth information about Next.js features and API.</p>
-        </a>
-
-        <a href="https://nextjs.org/learn" className="card">
-          <h3>Learn &rarr;</h3>
-          <p>Learn about Next.js in an interactive course with quizzes!</p>
-        </a>
-
-        <a
-          href="https://github.com/zeit/next.js/tree/master/examples"
-          className="card"
-        >
-          <h3>Examples &rarr;</h3>
-          <p>Discover and deploy boilerplate example Next.js projects.</p>
-        </a>
-
-        <a
-          href="https://zeit.co/new?filter=next.js&utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-          className="card"
-        >
-          <h3>Deploy &rarr;</h3>
-          <p>
-            Instantly deploy your Next.js site to a public URL with ZEIT Now.
-          </p>
-        </a>
-      </div>
-    </main>
-
-    <footer>
-      <a
-        href="https://zeit.co?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-        target="_blank"
-        rel="noopener noreferrer"
-      >
-        Powered by <img src="/zeit.svg" alt="ZEIT Logo" />
-      </a>
-    </footer>
-
-    <style jsx>{`
-      .container {
-        min-height: 100vh;
-        padding: 0 0.5rem;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-      }
-
-      main {
-        padding: 5rem 0;
-        flex: 1;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-      }
-
-      footer {
-        width: 100%;
-        height: 100px;
-        border-top: 1px solid #eaeaea;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-      }
-
-      footer img {
-        margin-left: 0.5rem;
-      }
-
-      footer a {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-      }
-
-      a {
-        color: inherit;
-        text-decoration: none;
-      }
-
-      .title a {
-        color: #0070f3;
-        text-decoration: none;
-      }
-
-      .title a:hover,
-      .title a:focus,
-      .title a:active {
-        text-decoration: underline;
-      }
-
-      .title {
-        margin: 0;
-        line-height: 1.15;
-        font-size: 4rem;
-      }
-
-      .title,
-      .description {
-        text-align: center;
-      }
-
-      .description {
-        line-height: 1.5;
-        font-size: 1.5rem;
-      }
-
-      code {
-        background: #fafafa;
-        border-radius: 5px;
-        padding: 0.75rem;
-        font-size: 1.1rem;
-        font-family: Menlo, Monaco, Lucida Console, Liberation Mono,
-          DejaVu Sans Mono, Bitstream Vera Sans Mono, Courier New, monospace;
-      }
-
-      .grid {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        flex-wrap: wrap;
-
-        max-width: 800px;
-        margin-top: 3rem;
-      }
-
-      .card {
-        margin: 1rem;
-        flex-basis: 45%;
-        padding: 1.5rem;
-        text-align: left;
-        color: inherit;
-        text-decoration: none;
-        border: 1px solid #eaeaea;
-        border-radius: 10px;
-        transition: color 0.15s ease, border-color 0.15s ease;
-      }
-
-      .card:hover,
-      .card:focus,
-      .card:active {
-        color: #0070f3;
-        border-color: #0070f3;
-      }
-
-      .card h3 {
-        margin: 0 0 1rem 0;
-        font-size: 1.5rem;
-      }
-
-      .card p {
-        margin: 0;
-        font-size: 1.25rem;
-        line-height: 1.5;
-      }
-
-      @media (max-width: 600px) {
-        .grid {
-          width: 100%;
-          flex-direction: column;
+    //Server-side renders the page. Fetches page information before rendering the page and returns data to React Page
+    static async getInitialProps({query: {page = 1}}) {
+        if (page < 1) {
+            page = 1;
         }
-      }
-    `}</style>
 
-    <style jsx global>{`
-      html,
-      body {
-        padding: 0;
-        margin: 0;
-        font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
-          Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
-      }
+        const res = await fetch(`${API_URLS.CHARACTER_URL}?page=${page}`);
+        const json = await res.json();
+        if (page > json.info.pages) {
+            page = json.info.pages;
+        }
+        //Returned data recieved by React Page Props
+        return {characters: json.results, page, totalPages: json.info.pages};
+    };
 
-      * {
-        box-sizing: border-box;
-      }
-    `}</style>
-  </div>
-)
 
-export default Home
+    constructor(props) {
+        super(props);
+        //Set Modal App Element
+        Modal.setAppElement('body');
+    }
+
+    /*
+    loading - Loading State for Character Cards
+    characterDetailsModalStatus - Character Modal Flag for toggling Modal
+    character - character state for character details modal
+    page - page state for pagination of API
+     */
+    state = {
+        loading: false,
+        characterDetailsModalStatus: false,
+        character: '',
+        page: this.props.page,
+    };
+
+
+    //Increments router path 'page' query
+    nextPage = () => {
+        if (this.props.page < this.props.totalPages) {
+            //Enables Loading State for Character Cards, increments page and disbales Loading after timeout
+            this.setState(prevState => ({
+                loading: true,
+                page: Number.parseInt(prevState.page) + 1 + '',
+            }), () => {
+                Router.push(`/?page=${this.state.page}`)
+                    .catch(err => console.log(err));
+
+
+                setTimeout(() => {
+                    this.setState({loading: false});
+                }, 300);
+            });
+        }
+    };
+
+    //Decrements router path 'page' query
+    previousPage = () => {
+        //Enables Loading State for Character Cards, increments page and disbales Loading after timeout
+        if (this.props.page > 1) {
+            this.setState(prevState => ({
+                loading: true,
+                page: Number.parseInt(prevState.page) - 1 + '',
+            }), () => {
+                Router.push(`/?page=${this.state.page}`)
+                    .catch(err => console.log(err));
+
+
+                setTimeout(() => {
+                    this.setState({loading: false});
+                }, 300);
+            });
+        }
+    };
+
+
+    //Toggle Handler for Character Details Modal - useful for closing modal when it is active
+    toggleCharacterModal = () => {
+        this.setState(prevState => ({
+            characterDetailsModalStatus: !prevState.characterDetailsModalStatus
+        }));
+    };
+
+    //Method for when a character card 'read-more' is clicked, saves the clicked character to state and toggles character-details modal
+    openCharacterDetails = (character) => {
+        this.setState({
+            character: character,
+        }, () => {
+            this.setState({characterDetailsModalStatus: true,});
+        });
+    };
+
+    render() {
+        //Iterates over characters list and maps them into CharacterCard Component
+        const CharacterCards = (
+            <div className={'character-list'}>
+                {this.props.characters.map((character, index) => (
+                    <CharacterCard
+                        key={index}
+                        modalHandler={character => this.openCharacterDetails(character)}
+                        character={character}
+                        loading={this.state.loading}/>
+                ))}
+            </div>
+        );
+
+        //Only show CharacterDetailsModal when a character is selected
+        const characterDetailsModal = this.state.character ? (
+            <CharacterDetailModals
+                modalStatus={this.state.characterDetailsModalStatus}
+                toggleModal={this.toggleCharacterModal}
+                character={this.state.character}/>) : '';
+
+        return (
+            <div id={'main'}>
+                {characterDetailsModal}
+                <div className={'banner'}>
+                    <p className={'banner-title'}>Rick and Morty Characters</p>
+                </div>
+                <div className={'pagination-buttons'}>
+                    <button onClick={this.previousPage}>
+                        <p>{'<'}</p>
+                    </button>
+                    <button onClick={this.nextPage}>
+                        <p>{'>'}</p>
+                    </button>
+                </div>
+                <div className={'character-container'}>
+                    {CharacterCards}
+                </div>
+                <div className={'pagination-buttons'}>
+                    <button onClick={this.previousPage}>
+                        <p>{'<'}</p>
+                    </button>
+                    <button onClick={this.nextPage}>
+                        <p>{'>'}</p>
+                    </button>
+                </div>
+            </div>
+        );
+    }
+}
+
+
+export default App;
