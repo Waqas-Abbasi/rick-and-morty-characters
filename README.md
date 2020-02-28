@@ -1,6 +1,5 @@
 #Rick and Morty Characters
 
-
 First, install all dependencies
 
 ```bash

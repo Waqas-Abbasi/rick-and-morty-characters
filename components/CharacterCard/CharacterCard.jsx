@@ -1,4 +1,4 @@
-import React from "react";
+import React from 'react';
 import styles from './character-styles.scss';
 
 const CharacterCard = ({character, loading, modalHandler}) => {
@@ -7,13 +7,13 @@ const CharacterCard = ({character, loading, modalHandler}) => {
 
     const characterCard = (
         <div>
-            <img className={"character-card-image"} alt={"character image"} src={image}/>
+            <img className={'character-card-image'} alt={'character image'} src={image}/>
             <div className={'character-card-info'}>
                 <p className={'character-card-title'}>{name}</p>
                 <div className={'character-card-details'}>
                     <div className={'character-card-details-row'}>
                         <p className={'detail-type'}>SPECIES</p>
-                        <p className={'detail-value'}>{species === 'unknown' ? "-" : species}</p>
+                        <p className={'detail-value'}>{species === 'unknown' ? '-' : species}</p>
                     </div>
                     <div className={'character-card-details-row'}>
                         <p className={'detail-type'}>GENDER</p>
@@ -21,7 +21,7 @@ const CharacterCard = ({character, loading, modalHandler}) => {
                     </div>
                     <div className={'character-card-details-row'}>
                         <p className={'detail-type'}>STATUS</p>
-                        <p className={'detail-value'}>{status === 'unknown' ? "-" : status}</p>
+                        <p className={'detail-value'}>{status === 'unknown' ? '-' : status}</p>
                     </div>
                 </div>
                 <div className={'character-card-read-more'} onClick={() => modalHandler(character)}>
@@ -46,7 +46,7 @@ const CharacterCard = ({character, loading, modalHandler}) => {
             {characterCard}
             {loading && loadingSkeletonCard}
         </div>
-    )
+    );
 
 };
 
