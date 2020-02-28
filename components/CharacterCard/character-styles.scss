@@ -3,7 +3,6 @@
   position: relative;
   flex-direction: column;
   justify-content: space-between;
-  height: 460px;
   width: 250px;
   padding-bottom: 0.5em;
   background: rgb(87, 87, 87);
@@ -16,6 +15,7 @@
   box-shadow: 0 4px 6px rgba(50, 50, 93, 0.11), 0 1px 3px rgba(0, 0, 0, 0.08);
   transition: all 0.15s ease;
   opacity: 0.9;
+  height: auto;
 
 
   &:hover {
