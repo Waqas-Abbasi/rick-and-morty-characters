@@ -1,5 +1,7 @@
 <h1>Rick and Morty Characters</h1>
 
+[Live Version](https://rick-and-morty-murex.now.sh/)
+
 First, install all dependencies
 
 ```bash
